@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="text-center">hello from index</h1>
+        <div class="text-center">
+            <button class="btn btn-primary">fetch animals</button>    
+            <button class="btn btn-primary">Single animal</button>
+            <button class="btn btn-primary">Languages</button>
+            <button class="btn btn-primary">frameworks</button>
+            <!-- <button class="btn btn-primary">stars</button> -->
+        </div>
+        <div>
+            <ul class="frameworks-holder row">
+            </ul>
+        </div>
+        
+    </div>
+
+    
+    <script>
+        (() => {
+            return fetch("http://localhost:4001/frameworks/stars")
+                .then(res => res.json())
+                .then(res => displayFrameworks(res))
+         })();
+
+
+        displayFrameworks = (array) => {
+            const frameworksHolder = document.querySelector('.frameworks-holder')
+            for(let i = 0; i < array.length; i++) {
+                const frameworkslistItem = document.createElement('li')
+                frameworkslistItem.classList.add('frameworks-list-item')
+                frameworkslistItem.classList.add('col-sm-6')
+                const frameworkName = document.createElement('h3')
+                const frameworkStars = document.createElement('p')
+                frameworkStars.classList.add('framework-stars')
+                frameworkStars.setAttribute('data-framework-name', array[i].framework)
+                frameworkStars.addEventListener('click', function(){
+                    const framework = this.dataset.frameworkName
+                    addStar(framework)
+                })
+                frameworkName.innerHTML = array[i].framework
+                frameworkStars.innerHTML = array[i].stars
+                frameworkslistItem.appendChild(frameworkName)
+                frameworkslistItem.appendChild(frameworkStars)
+                frameworksHolder.appendChild(frameworkslistItem)
+            }
+        }
+
+
+        const addStar = (framework) => {
+            return fetch(`http://localhost:4001/frameworks/addstar/${framework}`, {
+                method: "POST"
+            })
+                .then(res => res.json())
+                .then(res => updateSingleStar(res))
+        }
+
+        const fetchData = () => {
+            return fetch('http://localhost:4001/animals')
+                .then(res => res.json())
+                .then(res => console.log(res))
+        }
+        
+        const fetchSingleData = () => {
+            return fetch('http://localhost:4001/animals/1')
+                .then(res => res.text())
+                .then(res => console.log(res))
+        }
+
+        const fetchLanguages = () => {
+            return fetch('http://localhost:4001/languages')
+                .then(res => res.json())
+                .then(res => console.log(res))
+        }
+
+        const fetchFrameworks = () => {
+            return fetch('http://localhost:4001/frameworks')
+                .then(res => res.json())
+                .then(res => console.log(res))
+        }
+
+        const fetchStars = () => {
+            return fetch('http://localhost:4001/frameworks/stars')
+                .then(res => res.json())
+                .then(res => console.log(res))
+        }
+
+        const button = document.querySelectorAll('button')[0]
+        button.addEventListener('click', function() {
+            fetchData()
+        })
+        
+        const button1 = document.querySelectorAll('button')[1]
+        button1.addEventListener('click', function() {
+            fetchSingleData()
+        })
+
+        const button2 = document.querySelectorAll('button')[2]
+        button2.addEventListener('click', function() {
+            fetchLanguages()
+        })
+
+        const button3 = document.querySelectorAll('button')[3]
+        button3.addEventListener('click', function() {
+            fetchFrameworks()
+        })
+
+        // const button4 = document.querySelectorAll('button')[4]
+        // button4.addEventListener('click', function() {
+        //     fetchStars()
+        // })
+    </script>
+</body>
+</html>
